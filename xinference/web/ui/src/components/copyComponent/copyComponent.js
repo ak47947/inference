@@ -31,7 +31,7 @@ const CopyComponent = ({ tip, text }) => {
         onClose={() => setIsCopySuccess(false)}
       >
         <Alert severity="success" variant="filled" sx={{ width: '100%' }}>
-          Copied to clipboard!
+          复制到剪贴板成功!
         </Alert>
       </Snackbar>
     </>

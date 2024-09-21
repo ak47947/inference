@@ -47,7 +47,7 @@ const ClusterInfo = () => {
         padding: '20px 20px 0 20px',
       }}
     >
-      <Title title="Cluster Information" />
+      <Title title="集群信息" />
       <Grid container spacing={3} style={{ width: '100%' }}>
         <Grid item xs={12}>
           <Paper
@@ -58,7 +58,7 @@ const ClusterInfo = () => {
               flexDirection: 'column',
             }}
           >
-            <TableTitle>Supervisor</TableTitle>
+            <TableTitle>管理节点</TableTitle>
             <NodeInfo
               nodeRole="Supervisor"
               endpoint={endPoint}
@@ -76,7 +76,7 @@ const ClusterInfo = () => {
               flexDirection: 'column',
             }}
           >
-            <TableTitle>Workers</TableTitle>
+            <TableTitle>工作节点</TableTitle>
             <NodeInfo
               nodeRole="Worker"
               endpoint={endPoint}
@@ -94,7 +94,7 @@ const ClusterInfo = () => {
               flexDirection: 'column',
             }}
           >
-            <TableTitle>Worker Details</TableTitle>
+            <TableTitle>节点详情</TableTitle>
             <NodeInfo
               nodeRole="Worker-Details"
               endpoint={endPoint}

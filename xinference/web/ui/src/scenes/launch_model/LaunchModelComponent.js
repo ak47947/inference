@@ -131,25 +131,25 @@ const LaunchModelComponent = ({ modelType, gpuAvailable }) => {
         }}
       >
         <FormControl sx={{ marginTop: 2, minWidth: 120 }} size="small">
-          <InputLabel id="select-status">Status</InputLabel>
+          <InputLabel id="select-status">模型状态</InputLabel>
           <Select
             id="status"
             labelId="select-status"
-            label="Status"
+            label="模型状态"
             onChange={(e) => handleChangeFilter(e.target.value)}
             value={status}
             size="small"
             sx={{ width: '150px' }}
           >
-            <MenuItem value="cached">cached</MenuItem>
-            <MenuItem value="favorite">favorite</MenuItem>
+            <MenuItem value="cached">已缓存</MenuItem>
+            <MenuItem value="favorite">已收藏</MenuItem>
           </Select>
         </FormControl>
         <FormControl variant="outlined" margin="normal">
           <HotkeyFocusTextField
             id="search"
             type="search"
-            label={`Search for ${modelType} model name`}
+            label={`按${modelType}模型名搜索`}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             size="small"

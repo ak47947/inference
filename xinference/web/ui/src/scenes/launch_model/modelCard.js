@@ -298,8 +298,8 @@ const ModelCard = ({
           parseInt(nGPU, 10) === 0 || nGPU === 'CPU'
             ? null
             : nGPU === 'auto'
-            ? 'auto'
-            : parseInt(nGPU, 10),
+              ? 'auto'
+              : parseInt(nGPU, 10),
         replica: replica,
         request_limits:
           String(requestLimits)?.trim() === ''
@@ -415,8 +415,7 @@ const ModelCard = ({
       subType[3]
       fetchWrapper
         .delete(
-          `/v1/model_registrations/${
-            subType[3] === 'llm' ? 'LLM' : subType[3]
+          `/v1/model_registrations/${subType[3] === 'llm' ? 'LLM' : subType[3]
           }/${modelData.model_name}`
         )
         .then(() => {
@@ -801,7 +800,7 @@ const ModelCard = ({
                   {JSON.parse(localStorage.getItem('collectionArr'))?.includes(
                     modelData.model_name
                   ) ? (
-                    <Tooltip title={'Unfavorite'} placement="top">
+                    <Tooltip title={'取消收藏'} placement="top">
                       <IconButton
                         aria-label="collection"
                         onClick={(e) => {
@@ -813,7 +812,7 @@ const ModelCard = ({
                       </IconButton>
                     </Tooltip>
                   ) : (
-                    <Tooltip title={'Favorite'} placement="top">
+                    <Tooltip title={'收藏'} placement="top">
                       <IconButton
                         aria-label="cancellation-of-collections"
                         onClick={(e) => {
@@ -879,7 +878,7 @@ const ModelCard = ({
                 <span className="boldIconText">
                   {Math.floor(modelData.context_length / 1000)}K
                 </span>
-                <small className="smallText">context length</small>
+                <small className="smallText">上下文长度</small>
               </div>
               {(() => {
                 if (
@@ -889,7 +888,7 @@ const ModelCard = ({
                   return (
                     <div className="iconItem">
                       <ChatOutlined className="muiIcon" />
-                      <small className="smallText">chat model</small>
+                      <small className="smallText">对话模型</small>
                     </div>
                   )
                 } else if (
@@ -899,14 +898,14 @@ const ModelCard = ({
                   return (
                     <div className="iconItem">
                       <EditNoteOutlined className="muiIcon" />
-                      <small className="smallText">generate model</small>
+                      <small className="smallText">生成模型</small>
                     </div>
                   )
                 } else {
                   return (
                     <div className="iconItem">
                       <HelpCenterOutlined className="muiIcon" />
-                      <small className="smallText">other model</small>
+                      <small className="smallText">其他模型</small>
                     </div>
                   )
                 }
@@ -1038,13 +1037,13 @@ const ModelCard = ({
                 </div>
                 <div className="iconItem">
                   <span className="boldIconText">{modelData.max_tokens}</span>
-                  <small className="smallText">max tokens</small>
+                  <small className="smallText">最大 tokens</small>
                 </div>
               </div>
             )}
             {!selected && hover && (
               <p className="instructionText">
-                Click with mouse to launch the model
+                点击部署模型，将模型部署到节点，以使用。
               </p>
             )}
           </Box>
@@ -1093,7 +1092,7 @@ const ModelCard = ({
               <Grid rowSpacing={0} columnSpacing={1}>
                 <Grid item xs={12}>
                   <FormControl variant="outlined" margin="normal" fullWidth>
-                    <InputLabel id="modelEngine-label">Model Engine</InputLabel>
+                    <InputLabel id="modelEngine-label">推理引擎</InputLabel>
                     <Select
                       labelId="modelEngine-label"
                       value={modelEngine}
@@ -1113,7 +1112,7 @@ const ModelCard = ({
                         const cached = specs.some((spec) => isCached(spec))
 
                         const displayedEngine = cached
-                          ? engine + ' (cached)'
+                          ? engine + ' (已缓存)'
                           : engine
 
                         return (
@@ -1132,12 +1131,12 @@ const ModelCard = ({
                     fullWidth
                     disabled={!modelEngine}
                   >
-                    <InputLabel id="modelFormat-label">Model Format</InputLabel>
+                    <InputLabel id="modelFormat-label">模型格式</InputLabel>
                     <Select
                       labelId="modelFormat-label"
                       value={modelFormat}
                       onChange={(e) => setModelFormat(e.target.value)}
-                      label="Model Format"
+                      label="模型格式"
                     >
                       {formatOptions.map((format) => {
                         const specs = modelData.model_specs.filter(
@@ -1147,7 +1146,7 @@ const ModelCard = ({
                         const cached = specs.some((spec) => isCached(spec))
 
                         const displayedFormat = cached
-                          ? format + ' (cached)'
+                          ? format + ' (已缓存)'
                           : format
 
                         return (
@@ -1166,7 +1165,7 @@ const ModelCard = ({
                     fullWidth
                     disabled={!modelFormat}
                   >
-                    <InputLabel id="modelSize-label">Model Size</InputLabel>
+                    <InputLabel id="modelSize-label">模型大小</InputLabel>
                     <Select
                       labelId="modelSize-label"
                       value={modelSize}
@@ -1181,7 +1180,7 @@ const ModelCard = ({
                           )
                         const cached = specs.some((spec) => isCached(spec))
 
-                        const displayedSize = cached ? size + ' (cached)' : size
+                        const displayedSize = cached ? size + ' (已缓存)' : size
 
                         return (
                           <MenuItem key={size} value={size}>
@@ -1200,7 +1199,7 @@ const ModelCard = ({
                     disabled={!modelFormat || !modelSize}
                   >
                     <InputLabel id="quantization-label">
-                      Quantization
+                      量化精度
                     </InputLabel>
                     <Select
                       labelId="quantization-label"
@@ -1222,12 +1221,12 @@ const ModelCard = ({
                         })
                         const cached = Array.isArray(spec?.cache_status)
                           ? spec?.cache_status[
-                              spec?.quantizations.indexOf(quant)
-                            ]
+                          spec?.quantizations.indexOf(quant)
+                          ]
                           : spec?.cache_status
 
                         const displayedQuant = cached
-                          ? quant + ' (cached)'
+                          ? quant + ' (已缓存)'
                           : quant
 
                         return (
@@ -1247,7 +1246,7 @@ const ModelCard = ({
                       fullWidth
                       disabled={!modelFormat || !modelSize || !quantization}
                     >
-                      <InputLabel id="n-gpu-label">N-GPU</InputLabel>
+                      <InputLabel id="n-gpu-label">选择GPU</InputLabel>
                       <Select
                         labelId="n-gpu-label"
                         value={nGPU}
@@ -1292,7 +1291,7 @@ const ModelCard = ({
                           min: 1,
                         },
                       }}
-                      label="Replica"
+                      label="副本数"
                       value={replica}
                       onChange={(e) => setReplica(parseInt(e.target.value, 10))}
                     />
@@ -1301,7 +1300,7 @@ const ModelCard = ({
                 <ListItemButton onClick={() => setIsOther(!isOther)}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <ListItemText
-                      primary="Optional Configurations"
+                      primary="可选配置"
                       style={{ marginRight: 10 }}
                     />
                     {isOther ? <ExpandLess /> : <ExpandMore />}
@@ -1313,7 +1312,7 @@ const ModelCard = ({
                       <TextField
                         variant="outlined"
                         value={modelUID}
-                        label="(Optional) Model UID, model name by default"
+                        label="(可选) 模型UID, 默认为模型名称"
                         onChange={(e) => setModelUID(e.target.value)}
                       />
                     </FormControl>
@@ -1322,7 +1321,7 @@ const ModelCard = ({
                     <FormControl variant="outlined" margin="normal" fullWidth>
                       <TextField
                         value={requestLimits}
-                        label="(Optional) Request Limits, the number of request limits for this model，default is None"
+                        label="(可选) 请求数限制，此模型的请求数限制数量，默认值为 None"
                         onChange={(e) => {
                           setRequestLimitsAlert(false)
                           setRequestLimits(e.target.value)
@@ -1331,7 +1330,7 @@ const ModelCard = ({
                             (!Number(e.target.value) ||
                               Number(e.target.value) < 1 ||
                               parseInt(e.target.value) !==
-                                parseFloat(e.target.value))
+                              parseFloat(e.target.value))
                           ) {
                             setRequestLimitsAlert(true)
                           }
@@ -1349,7 +1348,7 @@ const ModelCard = ({
                       <TextField
                         variant="outlined"
                         value={workerIp}
-                        label="(Optional) Worker Ip, specify the worker ip where the model is located in a distributed scenario"
+                        label="(可选)Worker IP，在分布式场景下指定模型所在的工作节点的IP"
                         onChange={(e) => setWorkerIp(e.target.value)}
                       />
                     </FormControl>
@@ -1358,7 +1357,7 @@ const ModelCard = ({
                     <FormControl variant="outlined" margin="normal" fullWidth>
                       <TextField
                         value={GPUIdx}
-                        label="(Optional) GPU Idx, Specify the GPU index where the model is located"
+                        label="(可选) GPU 索引，指定模型所在的 GPU 索引"
                         onChange={(e) => {
                           setGPUIdxAlert(false)
                           setGPUIdx(e.target.value)
@@ -1373,8 +1372,7 @@ const ModelCard = ({
                       />
                       {GPUIdxAlert && (
                         <Alert severity="error">
-                          Please enter numeric data separated by commas, for
-                          example: 0,1,2
+                          请输入用逗号分隔的数字数据，例如: 0,1,2
                         </Alert>
                       )}
                     </FormControl>
@@ -1382,7 +1380,7 @@ const ModelCard = ({
                   <Grid item xs={12}>
                     <FormControl variant="outlined" margin="normal" fullWidth>
                       <InputLabel id="quantization-label">
-                        (Optional) Download_hub
+                        (可选) 下载hub库
                       </InputLabel>
                       <Select
                         labelId="download_hub-label"
@@ -1392,7 +1390,7 @@ const ModelCard = ({
                             ? setDownloadHub('')
                             : setDownloadHub(e.target.value)
                         }}
-                        label="(Optional) Download_hub"
+                        label="(可选) 下载hub库"
                       >
                         {(csghubArr.includes(modelData.model_name)
                           ? ['none', 'huggingface', 'modelscope', 'csghub']
@@ -1412,7 +1410,7 @@ const ModelCard = ({
                       <TextField
                         variant="outlined"
                         value={modelPath}
-                        label="(Optional) Model Path, For PyTorch, provide the model directory. For GGML/GGUF, provide the model file path."
+                        label="(可选) 模型路径，PyTorch格式提供模型目录， GGML/GGUF格式提供模型文件路径。"
                         onChange={(e) => setModelPath(e.target.value)}
                       />
                     </FormControl>
@@ -1422,7 +1420,7 @@ const ModelCard = ({
                   >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <ListItemText
-                        primary="Lora Config"
+                        primary="Lora 配置"
                         style={{ marginRight: 10 }}
                       />
                       {isPeftModelConfig ? <ExpandLess /> : <ExpandMore />}
@@ -1436,7 +1434,7 @@ const ModelCard = ({
                   >
                     <AddPair
                       customData={{
-                        title: 'Lora Model Config',
+                        title: 'Lora 模型配置',
                         key: 'lora_name',
                         value: 'local_path',
                       }}
@@ -1474,9 +1472,8 @@ const ModelCard = ({
                 </Collapse>
                 <AddPair
                   customData={{
-                    title: `Additional parameters passed to the inference engine${
-                      modelEngine ? ': ' + modelEngine : ''
-                    }`,
+                    title: `传递给推理引擎的其他参数${modelEngine ? ': ' + modelEngine : ''
+                      }`,
                     key: 'key',
                     value: 'value',
                   }}
@@ -1493,7 +1490,7 @@ const ModelCard = ({
               <TextField
                 variant="outlined"
                 value={modelUID}
-                label="(Optional) Model UID, model name by default"
+                label="(可选)模型UID, 默认模型名称"
                 onChange={(e) => setModelUID(e.target.value)}
               />
               <TextField
@@ -1529,7 +1526,7 @@ const ModelCard = ({
                 <FormControl variant="outlined" margin="normal" fullWidth>
                   <TextField
                     value={GPUIdx}
-                    label="GPU Idx, Specify the GPU index where the model is located"
+                    label="GPU索引，指定模型所在的GPU索引"
                     onChange={(e) => {
                       setGPUIdxAlert(false)
                       setGPUIdx(e.target.value)
@@ -1544,8 +1541,7 @@ const ModelCard = ({
                   />
                   {GPUIdxAlert && (
                     <Alert severity="error">
-                      Please enter numeric data separated by commas, for
-                      example: 0,1,2
+                      请输入用逗号分隔的数字数据，例如: 0,1,2
                     </Alert>
                   )}
                 </FormControl>
@@ -1554,13 +1550,13 @@ const ModelCard = ({
                 <TextField
                   variant="outlined"
                   value={workerIp}
-                  label="Worker Ip, specify the worker ip where the model is located in a distributed scenario"
+                  label="Worker IP，在分布式场景下指定模型所在的工作节点IP"
                   onChange={(e) => setWorkerIp(e.target.value)}
                 />
               </FormControl>
               <FormControl variant="outlined" margin="normal" fullWidth>
                 <InputLabel id="quantization-label">
-                  (Optional) Download_hub
+                  (可选)下载hub库
                 </InputLabel>
                 <Select
                   labelId="download_hub-label"
@@ -1570,7 +1566,7 @@ const ModelCard = ({
                       ? setDownloadHub('')
                       : setDownloadHub(e.target.value)
                   }}
-                  label="(Optional) Download_hub"
+                  label="(可选)下载hub库"
                 >
                   {['none', 'huggingface', 'modelscope'].map((item) => {
                     return (
@@ -1585,13 +1581,13 @@ const ModelCard = ({
                 <TextField
                   variant="outlined"
                   value={modelPath}
-                  label="(Optional) Model Path, For PyTorch, provide the model directory. For GGML/GGUF, provide the model file path."
+                  label="(可选) 模型路径，PyTorch格式提供模型目录， GGML/GGUF格式提供模型文件路径。"
                   onChange={(e) => setModelPath(e.target.value)}
                 />
               </FormControl>
               <AddPair
                 customData={{
-                  title: 'Additional parameters passed to the inference engine',
+                  title: '传递给推理引擎的其他参数',
                   key: 'key',
                   value: 'value',
                 }}
@@ -1605,7 +1601,7 @@ const ModelCard = ({
           )}
           <Box className="buttonsContainer">
             <button
-              title="Launch"
+              title="发布推理"
               className="buttonContainer"
               onClick={() => launchModel(url, modelData)}
               disabled={
@@ -1644,6 +1640,7 @@ const ModelCard = ({
                           color: '#000000',
                         }}
                       />
+                      123
                     </Box>
                   )
                 } else if (
@@ -1675,7 +1672,7 @@ const ModelCard = ({
               })()}
             </button>
             <button
-              title="Go Back"
+              title="返回"
               className="buttonContainer"
               onClick={() => {
                 setSelected(false)
@@ -1768,11 +1765,11 @@ const ModelCard = ({
                     </>
                   )}
                   <TableCell align="left" style={{ width: 192 }}>
-                    real_path
+                    真实路径
                   </TableCell>
                   <TableCell align="left" style={{ width: 46 }}></TableCell>
                   <TableCell align="left" style={{ width: 192 }}>
-                    path
+                    路径
                   </TableCell>
                   <TableCell align="left" style={{ width: 46 }}></TableCell>
                   <TableCell
@@ -1781,7 +1778,7 @@ const ModelCard = ({
                   >
                     IP Address
                   </TableCell>
-                  <TableCell align="left">operation</TableCell>
+                  <TableCell align="left">操作</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody style={{ position: 'relative' }}>
@@ -1818,7 +1815,7 @@ const ModelCard = ({
                     </TableCell>
                     <TableCell>
                       <CopyComponent
-                        tip={'Copy real_path'}
+                        tip={'复制真实路径'}
                         text={row.real_path}
                       />
                     </TableCell>
@@ -1859,7 +1856,7 @@ const ModelCard = ({
                   </TableRow>
                 )}
                 {cachedListArr.length === 0 && (
-                  <div className="empty">No cache for now !</div>
+                  <div className="empty">目前没有缓存!</div>
                 )}
               </TableBody>
             </Table>
@@ -1875,7 +1872,7 @@ const ModelCard = ({
         </div>
       </Backdrop>
       <DeleteDialog
-        text={'Confirm deletion of cache files? This action is irreversible.'}
+        text={'确认删除缓存文件吗？此操作不可逆转。'}
         isDelete={isDeleteCached}
         onHandleIsDelete={() => setIsDeleteCached(false)}
         onHandleDelete={handleDeleteCached}

@@ -90,7 +90,7 @@ const AddControlnet = ({
           className="addBtn"
           onClick={handleAddControlnet}
         >
-          more
+          更多模型
         </Button>
       </div>
       <div className="specs_container">
@@ -99,7 +99,7 @@ const AddControlnet = ({
             <TextField
               error={item.model_name !== '' ? false : true}
               style={{ minWidth: '60%', marginTop: '10px' }}
-              label="Model Name"
+              label="模型名称"
               size="small"
               value={item.model_name}
               onChange={(e) => {
@@ -111,7 +111,7 @@ const AddControlnet = ({
             <TextField
               error={item.model_uri !== '' ? false : true}
               style={{ minWidth: '60%' }}
-              label="Model Path"
+              label="模型文件路径"
               size="small"
               value={item.model_uri}
               onChange={(e) => {
@@ -125,7 +125,7 @@ const AddControlnet = ({
                 paddingLeft: 5,
               }}
             >
-              Model Format
+              模型格式
             </label>
             <RadioGroup
               value={item.model_format}
@@ -145,7 +145,7 @@ const AddControlnet = ({
               </Box>
             </RadioGroup>
 
-            <Tooltip title="Delete specs" placement="top">
+            <Tooltip title="删除" placement="top">
               <div
                 className="deleteBtn"
                 onClick={() => handleDeleteControlnet(index)}

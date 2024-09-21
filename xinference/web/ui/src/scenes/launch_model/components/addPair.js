@@ -123,7 +123,7 @@ const AddPair = ({ customData, pairData, onGetArr, onJudgeArr }) => {
                 </div>
                 {isNotUniqueKey && defaultIndex === index && (
                   <Alert severity="error">
-                    {customData.key} must be unique
+                    {customData.key} 必须唯一
                   </Alert>
                 )}
               </Box>
@@ -135,7 +135,7 @@ const AddPair = ({ customData, pairData, onGetArr, onJudgeArr }) => {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         open={openSnackbar}
         onClose={() => setOpenSnackbar(false)}
-        message="Please fill in the complete parameters before adding!!"
+        message="添加前请填写完整的参数!!"
         key={'top' + 'center'}
       />
     </div>

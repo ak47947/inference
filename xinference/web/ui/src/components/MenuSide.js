@@ -24,23 +24,23 @@ import icon from '../media/icon.webp'
 
 const navItems = [
   {
-    text: 'Launch Model',
+    text: '模型仓库',
     icon: <RocketLaunchOutlined />,
   },
   {
-    text: 'Running Models',
+    text: '运行实例',
     icon: <SmartToyOutlined />,
   },
   {
-    text: 'Register Model',
+    text: '注册模型',
     icon: <AddBoxOutlined />,
   },
   {
-    text: 'Cluster Information',
+    text: '集群信息',
     icon: <DnsOutlined />,
   },
   {
-    text: 'Contact Us',
+    text: '联系我们',
     icon: <GitHub />,
   },
 ]
@@ -116,8 +116,8 @@ const MenuSide = () => {
               sx={{ objectFit: 'cover', mr: 1.5 }}
             />
             <Box textAlign="left">
-              <Typography fontWeight="bold" fontSize="1.7rem">
-                {'Xinference'}
+              <Typography fontWeight="bold" fontSize="1.5rem">
+                {'深智城AIOps'}
               </Typography>
             </Box>
           </Box>
@@ -143,22 +143,22 @@ const MenuSide = () => {
                 <ListItem key={text}>
                   <ListItemButton
                     onClick={() => {
-                      if (link === 'contact_us') {
+                      if (link === '联系我们') {
                         window.open(
                           'https://github.com/xorbitsai/inference',
                           '_blank',
                           'noreferrer'
                         )
-                      } else if (link === 'launch_model') {
+                      } else if (link === '模型仓库') {
                         sessionStorage.setItem('modelType', '/launch_model/llm')
                         navigate('/launch_model/llm')
                         setActive(link)
                         sessionStorage.setItem('lastActiveUrl', link)
                         console.log(active)
-                      } else if (link === 'cluster_information') {
+                      } else if (link === '集群信息') {
                         navigate('/cluster_info')
                         setActive(link)
-                      } else if (link === 'running_models') {
+                      } else if (link === '运行实例') {
                         navigate('/running_models/LLM')
                         sessionStorage.setItem(
                           'runningModelType',
@@ -167,7 +167,7 @@ const MenuSide = () => {
                         setActive(link)
                         sessionStorage.setItem('lastActiveUrl', link)
                         console.log(active)
-                      } else if (link === 'register_model') {
+                      } else if (link === '注册模型') {
                         sessionStorage.setItem(
                           'registerModelType',
                           '/register_model/llm'

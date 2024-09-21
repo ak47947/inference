@@ -246,7 +246,7 @@ const AddModelSpecs = ({
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
-        <label style={{ width: '100px' }}>Model Specs</label>
+        <label style={{ width: '100px' }}>模型配置</label>
         <Button
           variant="contained"
           size="small"
@@ -254,7 +254,7 @@ const AddModelSpecs = ({
           className="addBtn"
           onClick={handleAddSpecs}
         >
-          more
+          更多模型
         </Button>
       </div>
       <div className="specs_container">
@@ -265,7 +265,7 @@ const AddModelSpecs = ({
                 paddingLeft: 5,
               }}
             >
-              Model Format
+              模型格式
             </label>
             <RadioGroup
               value={item.model_format}
@@ -300,7 +300,7 @@ const AddModelSpecs = ({
             <TextField
               error={item.model_uri !== '' ? false : true}
               style={{ minWidth: '60%' }}
-              label="Model Path"
+              label="模型文件路径"
               size="small"
               value={
                 item.model_format !== 'ggufv2'
@@ -310,13 +310,13 @@ const AddModelSpecs = ({
               onChange={(e) => {
                 handleUpdateSpecsArr(index, 'model_uri', e.target.value)
               }}
-              helperText="For PyTorch, provide the model directory. For GGUF, provide the model file path."
+              helperText="PyTorch格式提供模型目录,GGUF格式提供模型文件路径。"
             />
             <Box padding="15px"></Box>
 
             <TextField
               error={Number(item.model_size_in_billions) > 0 ? false : true}
-              label="Model Size in Billions"
+              label="模型大小（Billions）"
               size="small"
               value={item.model_size_in_billions}
               onChange={(e) => {
@@ -336,8 +336,8 @@ const AddModelSpecs = ({
                   style={{ minWidth: '60%' }}
                   label={
                     item.model_format === 'gptq' ||
-                    item.model_format === 'awq' ||
-                    item.model_format === 'fp8'
+                      item.model_format === 'awq' ||
+                      item.model_format === 'fp8'
                       ? 'Quantization'
                       : 'Quantization (Optional)'
                   }
@@ -353,8 +353,8 @@ const AddModelSpecs = ({
                   }}
                   helperText={
                     item.model_format === 'gptq' ||
-                    item.model_format === 'awq' ||
-                    item.model_format === 'fp8'
+                      item.model_format === 'awq' ||
+                      item.model_format === 'fp8'
                       ? 'For GPTQ/AWQ/FP8 models, please be careful to fill in the quantization corresponding to the model you want to register.'
                       : ''
                   }
@@ -370,7 +370,7 @@ const AddModelSpecs = ({
             )}
 
             {specsArr.length > 1 && (
-              <Tooltip title="Delete specs" placement="top">
+              <Tooltip title="删除" placement="top">
                 <div
                   className="deleteBtn"
                   onClick={() => handleDeleteSpecs(index)}

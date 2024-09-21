@@ -36,7 +36,7 @@ const RegisterModel = () => {
 
   return (
     <Box m="20px" style={{ overflow: 'hidden' }}>
-      <Title title="Register Model" />
+      <Title title="注册模型" />
       <ErrorMessageSnackBar />
       <TabContext value={tabValue}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -45,12 +45,12 @@ const RegisterModel = () => {
             onChange={handleTabChange}
             aria-label="tabs"
           >
-            <Tab label="Language Model" value="/register_model/llm" />
-            <Tab label="Embedding Model" value="/register_model/embedding" />
-            <Tab label="Rerank Model" value="/register_model/rerank" />
-            <Tab label="Image Model" value="/register_model/image" />
-            <Tab label="Audio Model" value="/register_model/audio" />
-            <Tab label="Flexible Model" value="/register_model/flexible" />
+            <Tab label="大语言模型" value="/register_model/llm" />
+            <Tab label="Embedding模型" value="/register_model/embedding" />
+            <Tab label="Rerank模型" value="/register_model/rerank" />
+            <Tab label="图片模型" value="/register_model/image" />
+            <Tab label="音频模型" value="/register_model/audio" />
+            <Tab label="Flexible模型" value="/register_model/flexible" />
           </TabList>
         </Box>
         <TabPanel value="/register_model/llm" sx={{ padding: 0 }}>
@@ -59,7 +59,7 @@ const RegisterModel = () => {
             customData={{
               version: 1,
               model_name: 'custom-llm',
-              model_description: 'This is a custom model description.',
+              model_description: '请输入模型描述信息。',
               context_length: 2048,
               model_lang: ['en'],
               model_ability: ['generate'],
@@ -71,7 +71,7 @@ const RegisterModel = () => {
                   quantizations: ['none'],
                 },
               ],
-              model_family: 'your_custom_model',
+              model_family: '自定义模型',
             }}
           />
         </TabPanel>

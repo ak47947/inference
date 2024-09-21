@@ -41,7 +41,7 @@ import AddControlnet from './components/addControlnet'
 import AddModelSpecs from './components/addModelSpecs'
 import AddStop from './components/addStop'
 import languages from './data/languages'
-const SUPPORTED_LANGUAGES_DICT = { en: 'English', zh: 'Chinese' }
+const SUPPORTED_LANGUAGES_DICT = { en: '英语', zh: '汉语' }
 const SUPPORTED_FEATURES = ['Generate', 'Chat', 'Vision', 'Tools']
 const messages = [
   {
@@ -254,8 +254,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
       if (!response.ok) {
         const errorData = await response.json() // Assuming the server returns error details in JSON format
         setErrorMsg(
-          `Server error: ${response.status} - ${
-            errorData.detail || 'Unknown error'
+          `服务器错误: ${response.status} - ${errorData.detail || '未知错误'
           }`
         )
       } else {
@@ -288,8 +287,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
       if (!response.ok) {
         const errorData = await response.json() // Assuming the server returns error details in JSON format
         setErrorMsg(
-          `Server error: ${response.status} - ${
-            errorData.detail || 'Unknown error'
+          `服务器错误: ${response.status} - ${errorData.detail || '未知错误'
           }`
         )
       } else {
@@ -312,7 +310,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
         getBuiltInPromptStyles().catch((error) => {
           setErrorMsg(
             error.message ||
-              'An unexpected error occurred when getting builtin prompt styles.'
+            'An unexpected error occurred when getting builtin prompt styles.'
           )
           console.error('Error: ', error)
         })
@@ -321,7 +319,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
         getBuiltinFamilies().catch((error) => {
           setErrorMsg(
             error.message ||
-              'An unexpected error occurred when getting builtin prompt styles.'
+            'An unexpected error occurred when getting builtin prompt styles.'
           )
           console.error('Error: ', error)
         })
@@ -361,7 +359,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
           (type === 'String' && formData[key] === '') ||
           (type === 'Number' && formData[key] <= 0))
       ) {
-        setErrorMsg('Please fill in valid value for all fields')
+        setErrorMsg('请为所有字段填写有效值')
         return
       }
     }
@@ -372,7 +370,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
       isDimensionsAlert ||
       isMaxTokensAlert
     ) {
-      setErrorMsg('Please fill in valid value for all fields')
+      setErrorMsg('请为所有字段填写有效值')
       return
     }
 
@@ -600,8 +598,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
   const handleEdit = () => {
     fetchWrapper
       .delete(
-        `/v1/model_registrations/${
-          registerModelType === 'llm' ? 'LLM' : registerModelType
+        `/v1/model_registrations/${registerModelType === 'llm' ? 'LLM' : registerModelType
         }/${model_name}`
       )
       .then(() => handleClick())
@@ -760,16 +757,16 @@ const RegisterModelComponent = ({ modelType, customData }) => {
   return (
     <Box style={{ display: 'flex', overFlow: 'hidden', maxWidth: '100%' }}>
       <div className="show-json">
-        <p>Show custom json config used by api</p>
+        <p>显示自定义JSON配置</p>
         {isShow ? (
-          <Tooltip title="Pack up" placement="top">
+          <Tooltip title="折叠" placement="top">
             <KeyboardDoubleArrowRightIcon
               className="icon arrow"
               onClick={() => setIsShow(!isShow)}
             />
           </Tooltip>
         ) : (
-          <Tooltip title="Unfold" placement="top">
+          <Tooltip title="展开" placement="top">
             <NotesIcon
               className="icon notes"
               onClick={() => setIsShow(!isShow)}
@@ -784,11 +781,11 @@ const RegisterModelComponent = ({ modelType, customData }) => {
           {customData.model_name && (
             <>
               <TextField
-                label="Model Name"
+                label="模型名称"
                 error={formData.model_name ? false : true}
                 value={formData.model_name}
                 size="small"
-                helperText="Alphanumeric characters with properly placed hyphens and underscores. Must not match any built-in model names."
+                helperText="模型名称的第一个字符必须是字母，其余字符可以是字母、数字、句点和连字符，不能与内置模型名称冲突。"
                 onChange={(event) =>
                   setFormData({ ...formData, model_name: event.target.value })
                 }
@@ -801,7 +798,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
           {customData.model_description && (
             <>
               <TextField
-                label="Model Description (Optional)"
+                label="模型描述(可选)"
                 value={formData.model_description}
                 size="small"
                 onChange={(event) =>
@@ -820,7 +817,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
             <>
               <TextField
                 error={Number(formData.context_length) > 0 ? false : true}
-                label="Context Length"
+                label="上下文长度"
                 value={formData.context_length}
                 size="small"
                 onChange={(event) => {
@@ -829,7 +826,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
               />
               {isContextLengthAlert && (
                 <Alert severity="error">
-                  Please enter an integer greater than 0.
+                  请输入一个大于 0 的整数。
                 </Alert>
               )}
               <Box padding="15px"></Box>
@@ -850,7 +847,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
               />
               {isDimensionsAlert && (
                 <Alert severity="error">
-                  Please enter an integer greater than 0.
+                  请输入一个大于 0 的整数。
                 </Alert>
               )}
               <Box padding="15px"></Box>
@@ -861,7 +858,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
           {customData.max_tokens && (
             <>
               <TextField
-                label="Max Tokens"
+                label="最大Tokens数"
                 error={Number(formData.max_tokens) > 0 ? false : true}
                 value={formData.max_tokens}
                 size="small"
@@ -871,7 +868,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
               />
               {isMaxTokensAlert && (
                 <Alert severity="error">
-                  Please enter an integer greater than 0.
+                  请输入一个大于 0 的整数。
                 </Alert>
               )}
               <Box padding="15px"></Box>
@@ -882,11 +879,11 @@ const RegisterModelComponent = ({ modelType, customData }) => {
           {customData.model_uri && (
             <>
               <TextField
-                label="Model Path"
+                label="模型文件路径"
                 error={formData.model_uri ? false : true}
                 value={formData.model_uri}
                 size="small"
-                helperText="Provide the model directory path."
+                helperText="请提供模型目录路径。"
                 onChange={(event) =>
                   setFormData({ ...formData, model_uri: event.target.value })
                 }
@@ -907,11 +904,11 @@ const RegisterModelComponent = ({ modelType, customData }) => {
                         ? '#d32f2f'
                         : 'inherit'
                       : formData.language.length === 0
-                      ? '#d32f2f'
-                      : 'inherit',
+                        ? '#d32f2f'
+                        : 'inherit',
                 }}
               >
-                Model Languages
+                模型语言
               </label>
               <Box className="checkboxWrapper">
                 {SUPPORTED_LANGUAGES.map((lang) => (
@@ -936,7 +933,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
                   </Box>
                 ))}
                 <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                  <InputLabel>Languages</InputLabel>
+                  <InputLabel>语言</InputLabel>
                   <Select
                     value={''}
                     label="Languages"
@@ -981,7 +978,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
                   paddingLeft: 5,
                 }}
               >
-                Multilingual
+                多语言
               </label>
               <FormControlLabel
                 style={{ marginLeft: 0, width: 50 }}
@@ -1004,7 +1001,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
                     formData.model_ability.length == 0 ? '#d32f2f' : 'inherit',
                 }}
               >
-                Model Abilities
+                模型分类
               </label>
               <Box className="checkboxWrapper">
                 {SUPPORTED_FEATURES.map((ability) => (
@@ -1046,14 +1043,14 @@ const RegisterModelComponent = ({ modelType, customData }) => {
                         {...params}
                         helperText={
                           isEditableFamily
-                            ? 'You can choose from the built-in models or input your own.'
-                            : 'You can only choose from the built-in models.'
+                            ? '你可以从内置模型中进行选择或输入你自己的模型。'
+                            : '你只能从内置模型中进行选择。'
                         }
                         InputProps={{
                           ...params.InputProps,
                           disabled: !isEditableFamily,
                         }}
-                        label="Model Family"
+                        label="模型家族"
                       />
                     )}
                     value={formData.model_family}
@@ -1078,7 +1075,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
                         color: 'inherit',
                       }}
                     >
-                      Model Family
+                      模型家族
                     </label>
                     <RadioGroup value={formData.model_family}>
                       <Box
@@ -1176,8 +1173,8 @@ const RegisterModelComponent = ({ modelType, customData }) => {
                         {testErrorInfo !== ''
                           ? testErrorInfo
                           : testRes
-                          ? testRes
-                          : 'No test results...'}
+                            ? testRes
+                            : 'No test results...'}
                       </div>
                     </div>
                   </div>
@@ -1259,11 +1256,11 @@ const RegisterModelComponent = ({ modelType, customData }) => {
           {customData.launcher && (
             <>
               <TextField
-                label="Launcher"
+                label="启动"
                 error={formData.launcher ? false : true}
                 value={formData.launcher}
                 size="small"
-                helperText="Provide the model launcher."
+                helperText="提供模型启动器"
                 onChange={(event) =>
                   setFormData({ ...formData, launcher: event.target.value })
                 }
@@ -1276,10 +1273,10 @@ const RegisterModelComponent = ({ modelType, customData }) => {
           {customData.launcher_args && (
             <>
               <TextField
-                label="Launcher Arguments (Optional)"
+                label="启动参数(可选)"
                 value={formData.launcher_args}
                 size="small"
-                helperText="A JSON-formatted dictionary representing the arguments passed to the Launcher."
+                helperText="一个 JSON 格式的字典，代表传递给启动器的参数。"
                 onChange={(event) => {
                   try {
                     JSON.parse(event.target.value)
@@ -1345,7 +1342,7 @@ const RegisterModelComponent = ({ modelType, customData }) => {
                 handleFamilyAlert()
               }
             >
-              Register Model
+              注册模型
             </Button>
           </Box>
         )}
@@ -1380,8 +1377,8 @@ const RegisterModelComponent = ({ modelType, customData }) => {
       {/* JSON */}
       <div className={isShow ? 'jsonBox' : 'jsonBox hide'}>
         <div className="jsonBox-header">
-          <div className="jsonBox-title">JSON Format</div>
-          <CopyComponent tip={'Copy all'} text={jsonData} />
+          <div className="jsonBox-title">JSON配置</div>
+          <CopyComponent tip={'复制'} text={jsonData} />
         </div>
         <textarea readOnly className="textarea" value={jsonData} />
       </div>

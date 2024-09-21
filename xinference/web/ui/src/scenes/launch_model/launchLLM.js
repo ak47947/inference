@@ -187,11 +187,11 @@ const LaunchLLM = ({ gpuAvailable }) => {
         }}
       >
         <FormControl sx={{ marginTop: 2, minWidth: 120 }} size="small">
-          <InputLabel id="ability-select-label">Model Ability</InputLabel>
+          <InputLabel id="ability-select-label">模型分类</InputLabel>
           <Select
             id="ability"
             labelId="ability-select-label"
-            label="Model Ability"
+            label="模型分类"
             onChange={(e) => handleChangeFilter('modelAbility', e.target.value)}
             value={modelAbility}
             size="small"
@@ -203,18 +203,18 @@ const LaunchLLM = ({ gpuAvailable }) => {
           </Select>
         </FormControl>
         <FormControl sx={{ marginTop: 2, minWidth: 120 }} size="small">
-          <InputLabel id="select-status">Status</InputLabel>
+          <InputLabel id="select-status">模型状态</InputLabel>
           <Select
             id="status"
             labelId="select-status"
-            label="Status"
+            label="模型状态"
             onChange={(e) => handleChangeFilter('status', e.target.value)}
             value={status}
             size="small"
             sx={{ width: '150px' }}
           >
-            <MenuItem value="cached">cached</MenuItem>
-            <MenuItem value="favorite">favorite</MenuItem>
+            <MenuItem value="cached">已缓存</MenuItem>
+            <MenuItem value="favorite">已收藏</MenuItem>
           </Select>
         </FormControl>
 
@@ -222,7 +222,7 @@ const LaunchLLM = ({ gpuAvailable }) => {
           <HotkeyFocusTextField
             id="search"
             type="search"
-            label="Search for model name and description"
+            label="按模型名搜索"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             size="small"

@@ -48,24 +48,24 @@ const RunningModels = () => {
       return
     }
     if (isCallingApi) {
-      setLlmData([{ id: 'Loading, do not refresh page...', url: 'IS_LOADING' }])
+      setLlmData([{ id: '加载中，请勿刷新页面...', url: 'IS_LOADING' }])
       setEmbeddingModelData([
-        { id: 'Loading, do not refresh page...', url: 'IS_LOADING' },
+        { id: '加载中，请勿刷新页面...', url: 'IS_LOADING' },
       ])
       setAudioModelData([
-        { id: 'Loading, do not refresh page...', url: 'IS_LOADING' },
+        { id: '加载中，请勿刷新页面...', url: 'IS_LOADING' },
       ])
       setVideoModelData([
-        { id: 'Loading, do not refresh page...', url: 'IS_LOADING' },
+        { id: '加载中，请勿刷新页面...', url: 'IS_LOADING' },
       ])
       setImageModelData([
-        { id: 'Loading, do not refresh page...', url: 'IS_LOADING' },
+        { id: '加载中，请勿刷新页面...', url: 'IS_LOADING' },
       ])
       setRerankModelData([
-        { id: 'Loading, do not refresh page...', url: 'IS_LOADING' },
+        { id: '加载中，请勿刷新页面...', url: 'IS_LOADING' },
       ])
       setFlexibleModelData([
-        { id: 'Loading, do not refresh page...', url: 'IS_LOADING' },
+        { id: '加载中，请勿刷新页面...', url: 'IS_LOADING' },
       ])
     } else {
       setIsUpdatingModel(true)
@@ -135,37 +135,37 @@ const RunningModels = () => {
     },
     {
       field: 'model_name',
-      headerName: 'Name',
+      headerName: '模型名称',
       flex: 1,
     },
     {
       field: 'address',
-      headerName: 'Address',
+      headerName: '地址',
       flex: 1,
     },
     {
       field: 'accelerators',
-      headerName: 'GPU Indexes',
+      headerName: 'GPU索引',
       flex: 1,
     },
     {
       field: 'model_size_in_billions',
-      headerName: 'Size',
+      headerName: '模型大小',
       flex: 1,
     },
     {
       field: 'quantization',
-      headerName: 'Quantization',
+      headerName: '模型量化',
       flex: 1,
     },
     {
       field: 'replica',
-      headerName: 'Replica',
+      headerName: '模型副本数',
       flex: 1,
     },
     {
       field: 'url',
-      headerName: 'Actions',
+      headerName: '操作',
       flex: 1,
       minWidth: 200,
       sortable: false,
@@ -329,27 +329,27 @@ const RunningModels = () => {
     },
     {
       field: 'model_name',
-      headerName: 'Name',
+      headerName: '模型名称',
       flex: 1,
     },
     {
       field: 'address',
-      headerName: 'Address',
+      headerName: '地址',
       flex: 1,
     },
     {
       field: 'accelerators',
-      headerName: 'GPU Indexes',
+      headerName: 'GPU信息',
       flex: 1,
     },
     {
       field: 'replica',
-      headerName: 'Replica',
+      headerName: '副本数',
       flex: 1,
     },
     {
       field: 'url',
-      headerName: 'Actions',
+      headerName: '操作',
       flex: 1,
       minWidth: 200,
       sortable: false,
@@ -430,22 +430,22 @@ const RunningModels = () => {
     },
     {
       field: 'model_name',
-      headerName: 'Name',
+      headerName: '模型名称',
       flex: 1,
     },
     {
       field: 'address',
-      headerName: 'Address',
+      headerName: '地址',
       flex: 1,
     },
     {
       field: 'accelerators',
-      headerName: 'GPU Indexes',
+      headerName: 'GPU信息',
       flex: 1,
     },
     {
       field: 'url',
-      headerName: 'Actions',
+      headerName: '操作',
       flex: 1,
       minWidth: 200,
       sortable: false,
@@ -551,7 +551,7 @@ const RunningModels = () => {
               </Box>
             </button>
             <button
-              title="Terminate Model"
+              title="停止模型服务"
               style={{
                 borderWidth: '0px',
                 backgroundColor: 'transparent',
@@ -564,7 +564,7 @@ const RunningModels = () => {
                 }
                 setIsCallingApi(true)
                 fetcher(closeUrl, {
-                  method: 'DELETE',
+                  method: '删除模型服务',
                 })
                   .then((response) => {
                     response.json()
@@ -627,7 +627,7 @@ const RunningModels = () => {
   const noRowsOverlay = () => {
     return (
       <Stack height="100%" alignItems="center" justifyContent="center">
-        No Running Models
+        没有运行中的模型
       </Stack>
     )
   }
@@ -635,7 +635,7 @@ const RunningModels = () => {
   const noResultsOverlay = () => {
     return (
       <Stack height="100%" alignItems="center" justifyContent="center">
-        No Running Models Matches
+        没有运行中的模型匹配
       </Stack>
     )
   }
@@ -648,7 +648,7 @@ const RunningModels = () => {
         padding: '20px 20px 0 20px',
       }}
     >
-      <Title title="Running Models" />
+      <Title title="运行实例" />
       <ErrorMessageSnackBar />
       <TabContext value={tabValue}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -657,13 +657,13 @@ const RunningModels = () => {
             onChange={handleTabChange}
             aria-label="tabs"
           >
-            <Tab label="Language Models" value="/running_models/LLM" />
-            <Tab label="Embedding Models" value="/running_models/embedding" />
-            <Tab label="Rerank models" value="/running_models/rerank" />
-            <Tab label="Image models" value="/running_models/image" />
-            <Tab label="Audio models" value="/running_models/audio" />
-            <Tab label="Video models" value="/running_models/video" />
-            <Tab label="Flexible models" value="/running_models/flexible" />
+            <Tab label="大语言模型" value="/running_models/LLM" />
+            <Tab label="Embedding模型" value="/running_models/embedding" />
+            <Tab label="Rerank模型" value="/running_models/rerank" />
+            <Tab label="图像模型" value="/running_models/image" />
+            <Tab label="音频模型" value="/running_models/audio" />
+            <Tab label="视频模型" value="/running_models/video" />
+            <Tab label="Flexible模型" value="/running_models/flexible" />
           </TabList>
         </Box>
         <TabPanel value="/running_models/LLM" sx={{ padding: 0 }}>
