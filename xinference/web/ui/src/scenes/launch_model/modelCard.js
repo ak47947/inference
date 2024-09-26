@@ -1640,7 +1640,6 @@ const ModelCard = ({
                           color: '#000000',
                         }}
                       />
-                      123
                     </Box>
                   )
                 } else if (
