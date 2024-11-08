@@ -327,6 +327,9 @@ const ModelCard = ({
         modelDataWithID_LLM.n_gpu_layers = nGPULayers
       }
 
+      const modelDataWithID =
+        modelType === 'LLM' ? modelDataWithID_LLM : modelDataWithID_other
+
       if (
         loraListArr.length ||
         imageLoraLoadKwargsArr.length ||
@@ -354,11 +357,8 @@ const ModelCard = ({
           })
           peft_model_config['lora_list'] = lora_list
         }
-        modelDataWithID_LLM['peft_model_config'] = peft_model_config
+        modelDataWithID['peft_model_config'] = peft_model_config
       }
-
-      const modelDataWithID =
-        modelType === 'LLM' ? modelDataWithID_LLM : modelDataWithID_other
 
       if (customParametersArr.length) {
         customParametersArr.forEach((item) => {
@@ -376,10 +376,15 @@ const ModelCard = ({
             `/running_models/${modelType}`
           )
           let historyArr = JSON.parse(localStorage.getItem('historyArr')) || []
-          if (!historyArr.some((item) => deepEqual(item, modelDataWithID))) {
-            historyArr = historyArr.filter(
-              (item) => item.model_name !== modelDataWithID.model_name
-            )
+          const historyModelNameArr = historyArr.map((item) => item.model_name)
+          if (historyModelNameArr.includes(modelDataWithID.model_name)) {
+            historyArr = historyArr.map((item) => {
+              if (item.model_name === modelDataWithID.model_name) {
+                return modelDataWithID
+              }
+              return item
+            })
+          } else {
             historyArr.push(modelDataWithID)
           }
           localStorage.setItem('historyArr', JSON.stringify(historyArr))
@@ -599,28 +604,10 @@ const ModelCard = ({
       })
       setLoraArr(loraData)
 
-      let ImageLoraLoadData = []
-      for (let key in peft_model_config?.image_lora_load_kwargs) {
-        ImageLoraLoadData.push({
-          key: key,
-          value: peft_model_config?.image_lora_load_kwargs[key],
-        })
-      }
-      setImageLoraLoadArr(ImageLoraLoadData)
-
-      let ImageLoraFuseData = []
-      for (let key in peft_model_config?.image_lora_fuse_kwargs) {
-        ImageLoraFuseData.push({
-          key: key,
-          value: peft_model_config?.image_lora_fuse_kwargs[key],
-        })
-      }
-      setImageLoraFuseArr(ImageLoraFuseData)
-
       let customData = []
       for (let key in arr[0]) {
         !llmAllDataKey.includes(key) &&
-          customData.push({ key: key, value: arr[0][key] })
+          customData.push({ key: key, value: arr[0][key] || 'none' })
       }
       setCustomArr(customData)
 
@@ -634,11 +621,7 @@ const ModelCard = ({
       )
         setIsOther(true)
 
-      if (
-        loraData.length ||
-        ImageLoraLoadData.length ||
-        ImageLoraFuseData.length
-      ) {
+      if (loraData.length) {
         setIsOther(true)
         setIsPeftModelConfig(true)
       }
@@ -656,35 +639,52 @@ const ModelCard = ({
       setDownloadHub(arr[0].download_hub || '')
       setModelPath(arr[0].model_path || '')
 
+      if (arr[0].model_type === 'image') {
+        let loraData = []
+        arr[0].peft_model_config?.lora_list?.forEach((item) => {
+          loraData.push({
+            lora_name: item.lora_name,
+            local_path: item.local_path,
+          })
+        })
+        setLoraArr(loraData)
+
+        let ImageLoraLoadData = []
+        for (let key in arr[0].peft_model_config?.image_lora_load_kwargs) {
+          ImageLoraLoadData.push({
+            key: key,
+            value:
+              arr[0].peft_model_config?.image_lora_load_kwargs[key] || 'none',
+          })
+        }
+        setImageLoraLoadArr(ImageLoraLoadData)
+
+        let ImageLoraFuseData = []
+        for (let key in arr[0].peft_model_config?.image_lora_fuse_kwargs) {
+          ImageLoraFuseData.push({
+            key: key,
+            value:
+              arr[0].peft_model_config?.image_lora_fuse_kwargs[key] || 'none',
+          })
+        }
+        setImageLoraFuseArr(ImageLoraFuseData)
+
+        if (
+          loraData.length ||
+          ImageLoraLoadData.length ||
+          ImageLoraFuseData.length
+        ) {
+          setIsPeftModelConfig(true)
+        }
+      }
+
       let customData = []
       for (let key in arr[0]) {
         !llmAllDataKey.includes(key) &&
-          customData.push({ key: key, value: arr[0][key] })
+          customData.push({ key: key, value: arr[0][key] || 'none' })
       }
       setCustomArr(customData)
     }
-  }
-
-  const deepEqual = (obj1, obj2) => {
-    if (obj1 === obj2) return true
-    if (
-      typeof obj1 !== 'object' ||
-      typeof obj2 !== 'object' ||
-      obj1 == null ||
-      obj2 == null
-    ) {
-      return false
-    }
-
-    let keysA = Object.keys(obj1)
-    let keysB = Object.keys(obj2)
-    if (keysA.length !== keysB.length) return false
-    for (let key of keysA) {
-      if (!keysB.includes(key) || !deepEqual(obj1[key], obj2[key])) {
-        return false
-      }
-    }
-    return true
   }
 
   const handleCollection = (bool) => {
@@ -724,8 +724,6 @@ const ModelCard = ({
       setDownloadHub('')
       setModelPath('')
       setLoraArr([])
-      setImageLoraLoadArr([])
-      setImageLoraFuseArr([])
       setCustomArr([])
       setIsOther(false)
       setIsPeftModelConfig(false)
@@ -737,6 +735,11 @@ const ModelCard = ({
       setWorkerIp('')
       setDownloadHub('')
       setModelPath('')
+      setLoraArr([])
+      setImageLoraLoadArr([])
+      setImageLoraFuseArr([])
+      setCustomArr([])
+      setIsPeftModelConfig(false)
     }
   }
 
@@ -990,7 +993,14 @@ const ModelCard = ({
                 {(() => {
                   if (modelData.language) {
                     return modelData.language.map((v) => {
-                      return <Chip label={v} variant="outlined" size="small" />
+                      return (
+                        <Chip
+                          key={v}
+                          label={v}
+                          variant="outlined"
+                          size="small"
+                        />
+                      )
                     })
                   } else if (modelData.model_family) {
                     return (
@@ -1043,7 +1053,7 @@ const ModelCard = ({
             )}
             {!selected && hover && (
               <p className="instructionText">
-                点击部署模型，将模型部署到节点，以使用。
+                点击部署模型。
               </p>
             )}
           </Box>
@@ -1131,7 +1141,7 @@ const ModelCard = ({
                     fullWidth
                     disabled={!modelEngine}
                   >
-                    <InputLabel id="modelFormat-label">模型格式</InputLabel>
+                    <InputLabel id="modelFormat-label">Model Format</InputLabel>
                     <Select
                       labelId="modelFormat-label"
                       value={modelFormat}
@@ -1146,7 +1156,7 @@ const ModelCard = ({
                         const cached = specs.some((spec) => isCached(spec))
 
                         const displayedFormat = cached
-                          ? format + ' (已缓存)'
+                          ? format + ' (cached)'
                           : format
 
                         return (
@@ -1393,8 +1403,19 @@ const ModelCard = ({
                         label="(可选) 下载hub库"
                       >
                         {(csghubArr.includes(modelData.model_name)
-                          ? ['none', 'huggingface', 'modelscope', 'csghub']
-                          : ['none', 'huggingface', 'modelscope']
+                          ? [
+                            'none',
+                            'huggingface',
+                            'modelscope',
+                            'openmind_hub',
+                            'csghub',
+                          ]
+                          : [
+                            'none',
+                            'huggingface',
+                            'modelscope',
+                            'openmind_hub',
+                          ]
                         ).map((item) => {
                           return (
                             <MenuItem key={item} value={item}>
@@ -1444,30 +1465,6 @@ const ModelCard = ({
                       onJudgeArr={judgeArr}
                       pairData={loraArr}
                     />
-                    <AddPair
-                      customData={{
-                        title: 'Lora Load Kwargs for Image Model',
-                        key: 'key',
-                        value: 'value',
-                      }}
-                      onGetArr={(arr) => {
-                        setImageLoraLoadKwargsArr(arr)
-                      }}
-                      onJudgeArr={judgeArr}
-                      pairData={imageLoraLoadArr}
-                    />
-                    <AddPair
-                      customData={{
-                        title: 'Lora Fuse Kwargs for Image Model',
-                        key: 'key',
-                        value: 'value',
-                      }}
-                      onGetArr={(arr) => {
-                        setImageLoraFuseKwargsArr(arr)
-                      }}
-                      onJudgeArr={judgeArr}
-                      pairData={imageLoraFuseArr}
-                    />
                   </Collapse>
                 </Collapse>
                 <AddPair
@@ -1486,122 +1483,193 @@ const ModelCard = ({
               </Grid>
             </Box>
           ) : (
-            <FormControl variant="outlined" margin="normal" fullWidth>
-              <TextField
-                variant="outlined"
-                value={modelUID}
-                label="(可选)模型UID, 默认模型名称"
-                onChange={(e) => setModelUID(e.target.value)}
-              />
-              <TextField
-                style={{ marginTop: '25px' }}
-                type="number"
-                InputProps={{
-                  inputProps: {
-                    min: 1,
-                  },
-                }}
-                label="Replica"
-                value={replica}
-                onChange={(e) => setReplica(parseInt(e.target.value, 10))}
-              />
+            <Box
+              ref={parentRef}
+              className="formContainer"
+              display="flex"
+              flexDirection="column"
+              width="100%"
+              mx="auto"
+            >
               <FormControl variant="outlined" margin="normal" fullWidth>
-                <InputLabel id="n-gpu-label">Device</InputLabel>
-                <Select
-                  labelId="n-gpu-label"
-                  value={nGpu}
-                  onChange={(e) => setNGpu(e.target.value)}
-                  label="N-GPU"
-                >
-                  {getNewNGPURange().map((v) => {
-                    return (
-                      <MenuItem key={v} value={v}>
-                        {v}
-                      </MenuItem>
-                    )
-                  })}
-                </Select>
-              </FormControl>
-              {nGpu === 'GPU' && (
+                <TextField
+                  variant="outlined"
+                  value={modelUID}
+                  label="(Optional) Model UID, model name by default"
+                  onChange={(e) => setModelUID(e.target.value)}
+                />
+                <TextField
+                  style={{ marginTop: '25px' }}
+                  type="number"
+                  InputProps={{
+                    inputProps: {
+                      min: 1,
+                    },
+                  }}
+                  label="Replica"
+                  value={replica}
+                  onChange={(e) => setReplica(parseInt(e.target.value, 10))}
+                />
+                <FormControl variant="outlined" margin="normal" fullWidth>
+                  <InputLabel id="n-gpu-label">Device</InputLabel>
+                  <Select
+                    labelId="n-gpu-label"
+                    value={nGpu}
+                    onChange={(e) => setNGpu(e.target.value)}
+                    label="N-GPU"
+                  >
+                    {getNewNGPURange().map((v) => {
+                      return (
+                        <MenuItem key={v} value={v}>
+                          {v}
+                        </MenuItem>
+                      )
+                    })}
+                  </Select>
+                </FormControl>
+                {nGpu === 'GPU' && (
+                  <FormControl variant="outlined" margin="normal" fullWidth>
+                    <TextField
+                      value={GPUIdx}
+                      label="GPU Idx, Specify the GPU index where the model is located"
+                      onChange={(e) => {
+                        setGPUIdxAlert(false)
+                        setGPUIdx(e.target.value)
+                        const regular = /^\d+(?:,\d+)*$/
+                        if (
+                          e.target.value !== '' &&
+                          !regular.test(e.target.value)
+                        ) {
+                          setGPUIdxAlert(true)
+                        }
+                      }}
+                    />
+                    {GPUIdxAlert && (
+                      <Alert severity="error">
+                        Please enter numeric data separated by commas, for
+                        example: 0,1,2
+                      </Alert>
+                    )}
+                  </FormControl>
+                )}
                 <FormControl variant="outlined" margin="normal" fullWidth>
                   <TextField
-                    value={GPUIdx}
-                    label="GPU索引，指定模型所在的GPU索引"
-                    onChange={(e) => {
-                      setGPUIdxAlert(false)
-                      setGPUIdx(e.target.value)
-                      const regular = /^\d+(?:,\d+)*$/
-                      if (
-                        e.target.value !== '' &&
-                        !regular.test(e.target.value)
-                      ) {
-                        setGPUIdxAlert(true)
-                      }
-                    }}
+                    variant="outlined"
+                    value={workerIp}
+                    label="Worker Ip, specify the worker ip where the model is located in a distributed scenario"
+                    onChange={(e) => setWorkerIp(e.target.value)}
                   />
-                  {GPUIdxAlert && (
-                    <Alert severity="error">
-                      请输入用逗号分隔的数字数据，例如: 0,1,2
-                    </Alert>
-                  )}
                 </FormControl>
-              )}
-              <FormControl variant="outlined" margin="normal" fullWidth>
-                <TextField
-                  variant="outlined"
-                  value={workerIp}
-                  label="Worker IP，在分布式场景下指定模型所在的工作节点IP"
-                  onChange={(e) => setWorkerIp(e.target.value)}
-                />
-              </FormControl>
-              <FormControl variant="outlined" margin="normal" fullWidth>
-                <InputLabel id="quantization-label">
-                  (可选)下载hub库
-                </InputLabel>
-                <Select
-                  labelId="download_hub-label"
-                  value={downloadHub}
-                  onChange={(e) => {
-                    e.target.value === 'none'
-                      ? setDownloadHub('')
-                      : setDownloadHub(e.target.value)
+                <FormControl variant="outlined" margin="normal" fullWidth>
+                  <InputLabel id="quantization-label">
+                    (Optional) Download_hub
+                  </InputLabel>
+                  <Select
+                    labelId="download_hub-label"
+                    value={downloadHub}
+                    onChange={(e) => {
+                      e.target.value === 'none'
+                        ? setDownloadHub('')
+                        : setDownloadHub(e.target.value)
+                    }}
+                    label="(Optional) Download_hub"
+                  >
+                    {['none', 'huggingface', 'modelscope', 'openmind_hub'].map(
+                      (item) => {
+                        return (
+                          <MenuItem key={item} value={item}>
+                            {item}
+                          </MenuItem>
+                        )
+                      }
+                    )}
+                  </Select>
+                </FormControl>
+                <FormControl variant="outlined" margin="normal" fullWidth>
+                  <TextField
+                    variant="outlined"
+                    value={modelPath}
+                    label="(Optional) Model Path, For PyTorch, provide the model directory. For GGML/GGUF, provide the model file path."
+                    onChange={(e) => setModelPath(e.target.value)}
+                  />
+                </FormControl>
+                {modelType === 'image' && (
+                  <>
+                    <ListItemButton
+                      onClick={() => setIsPeftModelConfig(!isPeftModelConfig)}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <ListItemText
+                          primary="Lora Config"
+                          style={{ marginRight: 10 }}
+                        />
+                        {isPeftModelConfig ? <ExpandLess /> : <ExpandMore />}
+                      </div>
+                    </ListItemButton>
+                    <Collapse
+                      in={isPeftModelConfig}
+                      timeout="auto"
+                      unmountOnExit
+                      style={{ marginLeft: '30px' }}
+                    >
+                      <AddPair
+                        customData={{
+                          title: 'Lora Model Config',
+                          key: 'lora_name',
+                          value: 'local_path',
+                        }}
+                        onGetArr={(arr) => {
+                          setLoraListArr(arr)
+                        }}
+                        onJudgeArr={judgeArr}
+                        pairData={loraArr}
+                      />
+                      <AddPair
+                        customData={{
+                          title: 'Lora Load Kwargs for Image Model',
+                          key: 'key',
+                          value: 'value',
+                        }}
+                        onGetArr={(arr) => {
+                          setImageLoraLoadKwargsArr(arr)
+                        }}
+                        onJudgeArr={judgeArr}
+                        pairData={imageLoraLoadArr}
+                      />
+                      <AddPair
+                        customData={{
+                          title: 'Lora Fuse Kwargs for Image Model',
+                          key: 'key',
+                          value: 'value',
+                        }}
+                        onGetArr={(arr) => {
+                          setImageLoraFuseKwargsArr(arr)
+                        }}
+                        onJudgeArr={judgeArr}
+                        pairData={imageLoraFuseArr}
+                      />
+                    </Collapse>
+                  </>
+                )}
+                <AddPair
+                  customData={{
+                    title:
+                      'Additional parameters passed to the inference engine',
+                    key: 'key',
+                    value: 'value',
                   }}
-                  label="(可选)下载hub库"
-                >
-                  {['none', 'huggingface', 'modelscope'].map((item) => {
-                    return (
-                      <MenuItem key={item} value={item}>
-                        {item}
-                      </MenuItem>
-                    )
-                  })}
-                </Select>
-              </FormControl>
-              <FormControl variant="outlined" margin="normal" fullWidth>
-                <TextField
-                  variant="outlined"
-                  value={modelPath}
-                  label="(可选) 模型路径，PyTorch格式提供模型目录， GGML/GGUF格式提供模型文件路径。"
-                  onChange={(e) => setModelPath(e.target.value)}
+                  onGetArr={(arr) => {
+                    setCustomParametersArr(arr)
+                  }}
+                  onJudgeArr={judgeArr}
+                  pairData={customArr}
                 />
               </FormControl>
-              <AddPair
-                customData={{
-                  title: '传递给推理引擎的其他参数',
-                  key: 'key',
-                  value: 'value',
-                }}
-                onGetArr={(arr) => {
-                  setCustomParametersArr(arr)
-                }}
-                onJudgeArr={judgeArr}
-                pairData={customArr}
-              />
-            </FormControl>
+            </Box>
           )}
           <Box className="buttonsContainer">
             <button
-              title="发布推理"
+              title="Launch"
               className="buttonContainer"
               onClick={() => launchModel(url, modelData)}
               disabled={
@@ -1671,7 +1739,7 @@ const ModelCard = ({
               })()}
             </button>
             <button
-              title="返回"
+              title="Go Back"
               className="buttonContainer"
               onClick={() => {
                 setSelected(false)
@@ -1764,11 +1832,11 @@ const ModelCard = ({
                     </>
                   )}
                   <TableCell align="left" style={{ width: 192 }}>
-                    真实路径
+                    real_path
                   </TableCell>
                   <TableCell align="left" style={{ width: 46 }}></TableCell>
                   <TableCell align="left" style={{ width: 192 }}>
-                    路径
+                    path
                   </TableCell>
                   <TableCell align="left" style={{ width: 46 }}></TableCell>
                   <TableCell
@@ -1777,7 +1845,7 @@ const ModelCard = ({
                   >
                     IP Address
                   </TableCell>
-                  <TableCell align="left">操作</TableCell>
+                  <TableCell align="left">operation</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody style={{ position: 'relative' }}>
@@ -1814,7 +1882,7 @@ const ModelCard = ({
                     </TableCell>
                     <TableCell>
                       <CopyComponent
-                        tip={'复制真实路径'}
+                        tip={'Copy real_path'}
                         text={row.real_path}
                       />
                     </TableCell>
@@ -1855,7 +1923,7 @@ const ModelCard = ({
                   </TableRow>
                 )}
                 {cachedListArr.length === 0 && (
-                  <div className="empty">目前没有缓存!</div>
+                  <div className="empty">No cache for now !</div>
                 )}
               </TableBody>
             </Table>
@@ -1871,7 +1939,7 @@ const ModelCard = ({
         </div>
       </Backdrop>
       <DeleteDialog
-        text={'确认删除缓存文件吗？此操作不可逆转。'}
+        text={'Confirm deletion of cache files? This action is irreversible.'}
         isDelete={isDeleteCached}
         onHandleIsDelete={() => setIsDeleteCached(false)}
         onHandleDelete={handleDeleteCached}

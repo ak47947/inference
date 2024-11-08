@@ -117,7 +117,7 @@ const MenuSide = () => {
             />
             <Box textAlign="left">
               <Typography fontWeight="bold" fontSize="1.5rem">
-                {'深智城AIOps'}
+                {'AIOps'}
               </Typography>
             </Box>
           </Box>

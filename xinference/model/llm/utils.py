@@ -29,6 +29,7 @@ from ...types import (
     ChatCompletion,
     ChatCompletionChoice,
     ChatCompletionChunk,
+    ChatCompletionMessage,
     Completion,
     CompletionChoice,
     CompletionChunk,
@@ -50,11 +51,16 @@ QWEN_TOOL_CALL_FAMILY = [
     "qwen1.5-moe-chat",
     "qwen2-instruct",
     "qwen2-moe-instruct",
+    "qwen2.5-instruct",
 ]
 
 GLM4_TOOL_CALL_FAMILY = [
     "glm4-chat",
     "glm4-chat-1m",
+]
+
+LLAMA3_TOOL_CALL_FAMILY = [
+    "llama-3.1-instruct",
 ]
 
 QWEN_TOOL_CALL_SYMBOLS = ["<tool_call>", "</tool_call>"]
@@ -113,7 +119,7 @@ class ChatModelMixin:
             return self._build_from_raw_template(messages, chat_template, **kwargs)
 
     @staticmethod
-    def get_specific_prompt(model_family: str, messages: List[Dict]):
+    def get_specific_prompt(model_family: str, messages: List[ChatCompletionMessage]):
         """
         Inspired by FastChat. Format chat history into a prompt according to the prompty style of
         different models.
@@ -129,7 +135,7 @@ class ChatModelMixin:
             ret = (
                 "<s>"
                 if system_prompt == ""
-                else "<s><|im_start|>system\n"
+                else "<s><|im_start|>system\n"  # type: ignore
                 + system_prompt
                 + intra_message_sep
                 + "\n"
@@ -159,14 +165,25 @@ class ChatModelMixin:
                         for image_url in image_urls:
                             fut = executor.submit(_decode_image, image_url)
                             image_futures.append(fut)
-                    images = [fut.result() for fut in image_futures]
+                    images.extend([fut.result() for fut in image_futures])
                     if len(image_futures) == 0:
                         ret += role + "\n" + text + intra_message_sep + "\n"
                     else:
-                        ret += (
-                            role + "\n" + f"<image>\n{text}" + intra_message_sep + "\n"
+                        placeholders = "\n".join(
+                            f"Image-{i+1}: <image>\n"
+                            for i in range(
+                                len(images) - len(image_futures), len(images)
+                            )
                         )
-
+                        ret += (
+                            role
+                            + "\n"
+                            + f"{placeholders}\n{text}"
+                            + intra_message_sep
+                            + "\n"
+                        )
+            if len(images) == 1:
+                ret = ret.replace("Image-1: <image>\n", "<image>\n")
             return ret, images
         else:
             raise ValueError(f"Invalid model family: {model_family}")
@@ -322,8 +339,9 @@ class ChatModelMixin:
         for content in contents:
             content = content.strip()
             if content:
-                if content.startswith(QWEN_TOOL_CALL_SYMBOLS[0]):
-                    content = content[len(QWEN_TOOL_CALL_SYMBOLS[0]) :]
+                pos = content.find(QWEN_TOOL_CALL_SYMBOLS[0])
+                if pos != -1:
+                    content = content[pos + len(QWEN_TOOL_CALL_SYMBOLS[0]) :]
                 content = content.strip()
                 try:
                     res = json.loads(content)
@@ -343,12 +361,23 @@ class ChatModelMixin:
         return cls._handle_qwen_tool_result(text)
 
     @classmethod
+    def _eval_llama3_chat_arguments(cls, c) -> List[Tuple]:
+        text = c["choices"][0]["text"]
+        try:
+            data = eval(text, {}, {})
+            return [(None, data["name"], data["parameters"])]
+        except Exception:
+            return [(text, None, None)]
+
+    @classmethod
     def _eval_tool_arguments(cls, model_family, c):
         family = model_family.model_family or model_family.model_name
         if family in GLM4_TOOL_CALL_FAMILY:
             result = cls._eval_glm_chat_arguments(c)
         elif family in QWEN_TOOL_CALL_FAMILY:
             result = cls._eval_qwen_chat_arguments(c)
+        elif family in LLAMA3_TOOL_CALL_FAMILY:
+            result = cls._eval_llama3_chat_arguments(c)
         else:
             raise Exception(
                 f"Model {model_family.model_name} is not support tool calls."
@@ -357,24 +386,22 @@ class ChatModelMixin:
         return result
 
     @classmethod
-    def _tool_calls_completion_chunk(cls, model_family, model_uid, c):
-        _id = str(uuid.uuid4())
+    def _tool_calls_completion_chunk(cls, model_family, model_uid, c, chunk_id=None):
+        _id = chunk_id if chunk_id is not None else str(uuid.uuid4())
         tool_result = cls._eval_tool_arguments(model_family, c)
         tool_calls = []
         failed_contents = []
         for content, func, args in tool_result:
             if func:
                 tool_calls.append(
-                    [
-                        {
-                            "id": f"call_{_id}",
-                            "type": "function",
-                            "function": {
-                                "name": func,
-                                "arguments": json.dumps(args, ensure_ascii=False),
-                            },
-                        }
-                    ]
+                    {
+                        "id": f"call_{_id}",
+                        "type": "function",
+                        "function": {
+                            "name": func,
+                            "arguments": json.dumps(args, ensure_ascii=False),
+                        },
+                    }
                 )
             else:
                 failed_contents.append(content)
@@ -459,6 +486,34 @@ class ChatModelMixin:
             ],
             "usage": usage,
         }
+
+    def _transform_messages(
+        self,
+        messages: List[ChatCompletionMessage],
+    ):
+        transformed_messages = []
+        for msg in messages:
+            new_content = []
+            role = msg["role"]
+            content = msg["content"]
+            if isinstance(content, str):
+                new_content.append({"type": "text", "text": content})
+            elif isinstance(content, List):
+                for item in content:  # type: ignore
+                    if "text" in item:
+                        new_content.append({"type": "text", "text": item["text"]})
+                    elif "image_url" in item:
+                        new_content.append(
+                            {"type": "image", "image": item["image_url"]["url"]}
+                        )
+                    elif "video_url" in item:
+                        new_content.append(
+                            {"type": "video", "video": item["video_url"]["url"]}
+                        )
+            new_message = {"role": role, "content": new_content}
+            transformed_messages.append(new_message)
+
+        return transformed_messages
 
 
 def get_file_location(

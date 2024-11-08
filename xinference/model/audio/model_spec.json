@@ -72,6 +72,14 @@
     "multilingual": true
   },
   {
+    "model_name": "whisper-large-v3-turbo",
+    "model_family": "whisper",
+    "model_id": "openai/whisper-large-v3-turbo",
+    "model_revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9",
+    "model_ability": "audio-to-text",
+    "multilingual": true
+  },
+  {
     "model_name": "Belle-distilwhisper-large-v2-zh",
     "model_family": "whisper",
     "model_id": "BELLE-2/Belle-distilwhisper-large-v2-zh",
@@ -119,7 +127,7 @@
     "model_name": "ChatTTS",
     "model_family": "ChatTTS",
     "model_id": "2Noise/ChatTTS",
-    "model_revision": "ce5913842aebd78e4a01a02d47244b8d62ac4ee3",
+    "model_revision": "1a3c04a8b0651689bd9242fbb55b1f4b5a9aef84",
     "model_ability": "text-to-audio",
     "multilingual": true
   },
