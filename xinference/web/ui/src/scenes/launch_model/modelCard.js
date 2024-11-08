@@ -1081,7 +1081,7 @@ const ModelCard = ({
             <TitleTypography value={modelData.model_name} />
             {isHistory && (
               <Chip
-                label="Last Config"
+                label="上次配置"
                 variant="outlined"
                 size="small"
                 color="primary"

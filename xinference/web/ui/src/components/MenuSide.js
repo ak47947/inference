@@ -20,7 +20,8 @@ import {
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import icon from '../media/icon.webp'
+// import icon from '../media/icon.webp'
+import icon from '../media/icon.png'
 
 const navItems = [
   {
@@ -116,8 +117,8 @@ const MenuSide = () => {
               sx={{ objectFit: 'cover', mr: 1.5 }}
             />
             <Box textAlign="left">
-              <Typography fontWeight="bold" fontSize="1.5rem">
-                {'AIOps'}
+              <Typography fontWeight="bold" fontSize="1.3rem">
+                {'AIOps运管平台'}
               </Typography>
             </Box>
           </Box>
@@ -145,7 +146,7 @@ const MenuSide = () => {
                     onClick={() => {
                       if (link === '联系我们') {
                         window.open(
-                          'https://github.com/xorbitsai/inference',
+                          'https://www.smartcitysz.com/',
                           '_blank',
                           'noreferrer'
                         )
